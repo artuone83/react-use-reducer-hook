@@ -7,6 +7,24 @@ const initialValues = {
   phone: ''
 };
 
+const projectTypes = [
+  {
+    id: 0,
+    name: 'frontend',
+    isChecked: false
+  },
+  {
+    id: 1,
+    name: 'backend',
+    isChecked: false
+  },
+  {
+    id: 2,
+    name: 'devOps',
+    isChecked: false
+  }
+];
+
 const basicInfoReducer = (state, action) => {
   switch (action.type) {
     case 'name':
@@ -43,12 +61,31 @@ const BasicInfo = ({onChange, values}) => {
       <input name="phone" id="phone" type="phone" value={values.phone} onChange={onChange} />
     </>
   );
+};
+
+const ProjectTypes = ({projects, handleClick}) => {
+  return(
+    <div>
+      <h2>Project Type</h2>
+      {
+        projects.map((project) => {
+          return(
+            <p 
+              style={{background: project.isChecked ? 'orange' : 'gray'}}
+              onClick={handleClick(project)}>
+                {project.name}
+            </p>
+          );
+        })
+      }
+    </div>
+  );
 }
 
 export default function App() {
   const [basicInfo, dispatch] = useReducer(basicInfoReducer, initialValues);
   const [submitValues, setSubmitValues] = useState(initialValues);
-  const form = useRef(null);
+  const [availabelProjects, setAvailableProjects] = useState(projectTypes)
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,6 +106,10 @@ export default function App() {
     setSubmitValues(initialValues);
   }
 
+  const handleProjectClick = (project) => (event) => {
+    console.log(project);
+  }
+
 
   return (
     <div>
@@ -83,6 +124,9 @@ export default function App() {
         <p>Email: {submitValues.email}</p>
         <p>Phone: {submitValues.phone}</p>
       </div>
+      <ProjectTypes 
+        projects={availabelProjects}
+        handleClick={handleProjectClick}/>
     </div>
   );
 }
