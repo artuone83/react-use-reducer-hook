@@ -107,7 +107,18 @@ export default function App() {
   }
 
   const handleProjectClick = (project) => (event) => {
-    console.log(project);
+    const selected = availabelProjects.find((avaProject) => avaProject.id === project.id);
+
+    const selectedIndex = availabelProjects.findIndex((avaProject) => avaProject.id === project.id);
+
+    setAvailableProjects((prevState) => {
+      const checkedProjects = [...prevState]
+      checkedProjects[selectedIndex].isChecked = !selected.isChecked;
+      return([
+        ...checkedProjects
+
+      ])
+    });
   }
 
 
