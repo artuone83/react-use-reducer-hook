@@ -83,6 +83,7 @@ const ProjectTypes = ({projects, handleClick}) => {
           projects.map((project) => {
             return(
               <p 
+                key={project.id}
                 style={{background: project.isChecked ? 'orange' : 'gray'}}
                 className="project-types__type"
                 onClick={handleClick(project)}>
