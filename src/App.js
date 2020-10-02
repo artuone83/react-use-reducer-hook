@@ -119,13 +119,29 @@ const ProjectTypes = ({projects, handleClick}) => {
   const handleResetForm = () => {
     dispatch({type: 'reset', value: initialValues});
     setSubmitValues(initialValues);
-    setAvailableProjects(projectTypes);
+    setAvailableProjects([
+      {
+        id: 0,
+        name: 'frontend',
+        isChecked: false
+      },
+      {
+        id: 1,
+        name: 'backend',
+        isChecked: false
+      },
+      {
+        id: 2,
+        name: 'devOps',
+        isChecked: false
+      }
+    ]);
+    // setAvailableProjects(projectTypes);
   };
 
   const handleProjectClick = (project) => (event) => {
     const selected = availabelProjects.find((availableProject) => availableProject.id === project.id);
-    const includesInSelectedType = basicInfo.projectTypes.find((type) => type.name === selected.name);
-  
+    const includesInSelectedType = basicInfo.projectTypes.find((type) => type.id === selected.id);  
     
     dispatch({type: 'ADD_PROJECT_TYPE', value: selected});
 
@@ -134,7 +150,6 @@ const ProjectTypes = ({projects, handleClick}) => {
     const currentSelectedTypes = [...basicInfo.projectTypes];
     currentSelectedTypes.splice(foundIndex, 1);
     dispatch({type: 'REMOVE_PROJECT_TYPE', value: currentSelectedTypes});
-
   }
 
     const selectedIndex = availabelProjects.findIndex((availableProject) => availableProject.id === project.id);
