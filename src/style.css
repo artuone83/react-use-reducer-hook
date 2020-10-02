@@ -1,3 +1,11 @@
 h1, p {
   font-family: Lato;
 }
+.project-types {
+  display: flex;
+}
+.project-types__type {
+  margin-right: 20px;
+  padding: 10px 15px;
+  cursor: pointer;
+}

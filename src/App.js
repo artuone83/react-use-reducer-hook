@@ -4,7 +4,8 @@ import "./style.css";
 const initialValues = {
   name: '',
   email: '',
-  phone: ''
+  phone: '',
+  projectTypes: []
 };
 
 const projectTypes = [
@@ -47,6 +48,16 @@ const basicInfoReducer = (state, action) => {
         ...state,
         ...action.value
       }
+      case 'ADD_PROJECT_TYPE':
+      return {
+        ...state,
+        projectTypes: [...state.projectTypes, action.value]
+      }
+      case 'REMOVE_PROJECT_TYPE':
+      return {
+        ...state,
+        projectTypes: action.value
+      }
     default:
       return state
   }
@@ -65,24 +76,27 @@ const BasicInfo = ({onChange, values}) => {
 
 const ProjectTypes = ({projects, handleClick}) => {
   return(
-    <div>
-      <h2>Project Type</h2>
-      {
-        projects.map((project) => {
-          return(
-            <p 
-              style={{background: project.isChecked ? 'orange' : 'gray'}}
-              onClick={handleClick(project)}>
-                {project.name}
-            </p>
-          );
-        })
-      }
-    </div>
+    <>
+      <h2>Project Types</h2>
+      <div className="project-types">
+        {
+          projects.map((project) => {
+            return(
+              <p 
+                style={{background: project.isChecked ? 'orange' : 'gray'}}
+                className="project-types__type"
+                onClick={handleClick(project)}>
+                  {project.name}
+              </p>
+            );
+          })
+        }
+      </div>
+    </>
   );
 }
 
-export default function App() {
+ const App = () => {
   const [basicInfo, dispatch] = useReducer(basicInfoReducer, initialValues);
   const [submitValues, setSubmitValues] = useState(initialValues);
   const [availabelProjects, setAvailableProjects] = useState(projectTypes)
@@ -92,7 +106,8 @@ export default function App() {
     setSubmitValues({
       name: basicInfo.name,
       email: basicInfo.email,
-      phone: basicInfo.phone
+      phone: basicInfo.phone,
+      projectTypes: basicInfo.projectTypes
     })
 
   };
@@ -101,25 +116,37 @@ export default function App() {
     dispatch({type: `${e.target.name}`, value: e.target.value});
   };
 
-  const handleRestForm = () => {
-    dispatch({type: 'reset', value: {name: '', email: '', phone: ''}});
+  const handleResetForm = () => {
+    dispatch({type: 'reset', value: initialValues});
     setSubmitValues(initialValues);
-  }
+    setAvailableProjects(projectTypes);
+  };
 
   const handleProjectClick = (project) => (event) => {
-    const selected = availabelProjects.find((avaProject) => avaProject.id === project.id);
+    const selected = availabelProjects.find((availableProject) => availableProject.id === project.id);
+    const includesInSelectedType = basicInfo.projectTypes.find((type) => type.name === selected.name);
+  
+    
+    dispatch({type: 'ADD_PROJECT_TYPE', value: selected});
 
-    const selectedIndex = availabelProjects.findIndex((avaProject) => avaProject.id === project.id);
+  if (includesInSelectedType) {
+    const foundIndex = basicInfo.projectTypes.findIndex((pt) => pt.name === includesInSelectedType.name)
+    const currentSelectedTypes = [...basicInfo.projectTypes];
+    currentSelectedTypes.splice(foundIndex, 1);
+    dispatch({type: 'REMOVE_PROJECT_TYPE', value: currentSelectedTypes});
+
+  }
+
+    const selectedIndex = availabelProjects.findIndex((availableProject) => availableProject.id === project.id);
 
     setAvailableProjects((prevState) => {
-      const checkedProjects = [...prevState]
-      checkedProjects[selectedIndex].isChecked = !selected.isChecked;
+      const checkedProjects = [...prevState];
+      checkedProjects[selectedIndex].isChecked = !checkedProjects[selectedIndex].isChecked;
       return([
         ...checkedProjects
-
       ])
     });
-  }
+  };
 
 
   return (
@@ -127,17 +154,20 @@ export default function App() {
       <form onSubmit={handleSubmit} >
         <BasicInfo onChange={handleInputChange} values={basicInfo} />
         <input type="submit" />
-        <input type="button" onClick={handleRestForm} value="Reset form" />
+        <input type="button" onClick={handleResetForm} value="Reset form" />
+      <ProjectTypes 
+        projects={availabelProjects}
+        handleClick={handleProjectClick}/>
       </form>
       <div>
         <h2>Submit values</h2>
         <p>Name: {submitValues.name}</p>
         <p>Email: {submitValues.email}</p>
         <p>Phone: {submitValues.phone}</p>
+        <p>Project Types: {submitValues.projectTypes.map((pt) => pt.name)}</p>
       </div>
-      <ProjectTypes 
-        projects={availabelProjects}
-        handleClick={handleProjectClick}/>
     </div>
   );
 }
+
+export default App;
