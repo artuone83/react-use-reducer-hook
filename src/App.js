@@ -99,7 +99,7 @@ const ProjectTypes = ({projects, handleClick}) => {
  const App = () => {
   const [basicInfo, dispatch] = useReducer(basicInfoReducer, initialValues);
   const [submitValues, setSubmitValues] = useState(initialValues);
-  const [availabelProjects, setAvailableProjects] = useState(projectTypes)
+  const [availableProjects, setAvailableProjects] = useState(projectTypes)
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -140,7 +140,7 @@ const ProjectTypes = ({projects, handleClick}) => {
   };
 
   const handleProjectClick = (project) => (event) => {
-    const selected = availabelProjects.find((availableProject) => availableProject.id === project.id);
+    const selected = availableProjects.find((availableProject) => availableProject.id === project.id);
     const includesInSelectedType = basicInfo.projectTypes.find((type) => type.id === selected.id);  
     
     dispatch({type: 'ADD_PROJECT_TYPE', value: selected});
@@ -152,7 +152,7 @@ const ProjectTypes = ({projects, handleClick}) => {
     dispatch({type: 'REMOVE_PROJECT_TYPE', value: currentSelectedTypes});
   }
 
-    const selectedIndex = availabelProjects.findIndex((availableProject) => availableProject.id === project.id);
+    const selectedIndex = availableProjects.findIndex((availableProject) => availableProject.id === project.id);
 
     setAvailableProjects((prevState) => {
       const checkedProjects = [...prevState];
@@ -171,7 +171,7 @@ const ProjectTypes = ({projects, handleClick}) => {
         <input type="submit" />
         <input type="button" onClick={handleResetForm} value="Reset form" />
       <ProjectTypes 
-        projects={availabelProjects}
+        projects={availableProjects}
         handleClick={handleProjectClick}/>
       </form>
       <div>
